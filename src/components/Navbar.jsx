@@ -18,7 +18,7 @@ const Navbar = ({ theme, toggleTheme }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
-  const resumeUrl = heroData?.resumeUrl || '/resume.pdf'
+  const resumeUrl = heroData?.resumeUrl
 
   useEffect(() => {
     let ticking = false
@@ -115,16 +115,18 @@ const Navbar = ({ theme, toggleTheme }) => {
                 )
               })}
               <div className="ml-4 flex items-center gap-3">
-                <motion.a
-                  href={resumeUrl}
-                  download="Resume.pdf"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border border-white/20 text-gray-300 hover:text-white hover:border-white/40 transition-all"
-                >
-                  <FileText size={14} />
-                  Resume
-                </motion.a>
+                {resumeUrl && (
+                  <motion.a
+                    href={resumeUrl}
+                    download="Resume.pdf"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full border border-white/20 text-gray-300 hover:text-white hover:border-white/40 transition-all"
+                  >
+                    <FileText size={14} />
+                    Resume
+                  </motion.a>
+                )}
                 <motion.a
                   href="#contact"
                   whileHover={{ scale: 1.05 }}
@@ -176,16 +178,18 @@ const Navbar = ({ theme, toggleTheme }) => {
                 )
               })}
               <div className="flex gap-3 mt-2 pt-2 border-t border-white/5">
-                <motion.a
-                  href={resumeUrl}
-                  download="Resume.pdf"
-                  whileHover={{ x: 8 }}
-                  onClick={() => setIsOpen(false)}
-                  className="flex-1 py-3 px-4 border border-white/20 text-gray-300 font-medium rounded-xl text-center text-sm"
-                >
-                  <FileText size={16} className="inline mr-2" />
-                  Resume
-                </motion.a>
+                {resumeUrl && (
+                  <motion.a
+                    href={resumeUrl}
+                    download="Resume.pdf"
+                    whileHover={{ x: 8 }}
+                    onClick={() => setIsOpen(false)}
+                    className="flex-1 py-3 px-4 border border-white/20 text-gray-300 font-medium rounded-xl text-center text-sm"
+                  >
+                    <FileText size={16} className="inline mr-2" />
+                    Resume
+                  </motion.a>
+                )}
                 <motion.a
                   href="#contact"
                   whileHover={{ x: 8 }}

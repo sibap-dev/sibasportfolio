@@ -15,8 +15,8 @@ const Hero = () => {
   const { data: heroData } = useFirebaseData('hero')
   const WORDS = heroData?.subtitleWords || DEFAULT_WORDS
   const tagline = heroData?.tagline || 'Crafting innovative web applications, exploring cutting-edge technologies, and building digital experiences that make an impact.'
-  const profileImage = heroData?.profileImage || '/profile.jpg'
-  const resumeUrl = heroData?.resumeUrl || '/resume.pdf'
+  const profileImage = heroData?.profileImage
+  const resumeUrl = heroData?.resumeUrl
   const badge = heroData?.badge || 'Available for opportunities'
 
   const name = heroData?.name || 'Siba Prasad Padhi'
@@ -186,13 +186,13 @@ const Hero = () => {
           className="mb-8"
         >
           <div className="relative inline-block">
-            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-[3px] border-transparent bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] p-[3px] shadow-[0_0_40px_rgba(var(--color-secondary-rgb),0.2)]">
+              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-[3px] border-transparent bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] p-[3px] shadow-[0_0_40px_rgba(var(--color-secondary-rgb),0.2)]">
               <div className="w-full h-full rounded-full bg-[#1a1a2e] flex items-center justify-center overflow-hidden">
-                <img
-                  src={profileImage}
-                  alt="Siba Prasad Padhi"
-                  className="w-full h-full object-cover"
-                />
+                {profileImage ? (
+                  <img src={profileImage} alt="Siba Prasad Padhi" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-2xl sm:text-3xl font-bold text-white/40 font-display">SP</span>
+                )}
               </div>
             </div>
             <motion.div
@@ -304,18 +304,20 @@ const Hero = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-primary)]/10 via-[var(--color-secondary)]/10 to-[var(--color-accent)]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </motion.a>
 
-          <motion.a
-            href={resumeUrl}
-            download="Resume.pdf"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="group relative px-8 py-3.5 bg-white/5 border border-white/10 text-gray-300 font-semibold rounded-full hover:bg-white/10 hover:text-white transition-all duration-300 overflow-hidden"
-          >
-            <span className="relative z-10 flex items-center gap-2">
-              <Download size={16} />
-              Resume
-            </span>
-          </motion.a>
+          {resumeUrl && (
+            <motion.a
+              href={resumeUrl}
+              download="Resume.pdf"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative px-8 py-3.5 bg-white/5 border border-white/10 text-gray-300 font-semibold rounded-full hover:bg-white/10 hover:text-white transition-all duration-300 overflow-hidden"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                <Download size={16} />
+                Resume
+              </span>
+            </motion.a>
+          )}
         </motion.div>
 
         {/* Social links */}
