@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { Code, GraduationCap, Briefcase, Award, Sparkles, ArrowRight } from 'lucide-react'
 import { useFirebaseData } from '../hooks/useFirebaseData'
+import { useTouchDevice } from '../hooks/useTouchDevice'
 
 const ICON_MAP = { GraduationCap, Briefcase, Code, Award }
 const COLORS = ['var(--color-primary)', 'var(--color-secondary)', 'var(--color-accent)', 'var(--color-primary)']
@@ -15,6 +16,7 @@ const DEFAULT_TIMELINE = [
 
 const Journey = () => {
   const { data: journeyData } = useFirebaseData('journey')
+  const isTouch = useTouchDevice()
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
 
   const rawTimeline = journeyData?.items?.length ? journeyData.items : DEFAULT_TIMELINE.map(({ icon, color, ...rest }) => rest)
@@ -98,14 +100,14 @@ const Journey = () => {
                   </motion.div>
                   {/* Pulse ring */}
                   <motion.div
-                    className="absolute inset-0 rounded-full"
+                    className={`absolute inset-0 rounded-full${isTouch ? ' m-pulse-ring' : ''}`}
                     style={{
                       border: `2px solid ${item.color}`,
                     }}
-                    animate={{
+                    animate={!isTouch ? {
                       scale: [1, 1.4, 1],
                       opacity: [0.5, 0, 0.5],
-                    }}
+                    } : {}}
                     transition={{
                       duration: 2.5,
                       repeat: Infinity,

@@ -3,6 +3,7 @@ import { ArrowDown, Github, Linkedin, Mail, Sparkles, Download, Code2 } from 'lu
 import { useState, useEffect, useMemo, useCallback } from 'react'
 
 import { useFirebaseData } from '../hooks/useFirebaseData'
+import { useTouchDevice } from '../hooks/useTouchDevice'
 
 const DEFAULT_WORDS = ['Developer', 'Creative Thinker', 'Problem Solver', 'Innovator', 'Tech Enthusiast']
 const DEFAULT_SOCIALS = [
@@ -13,6 +14,7 @@ const DEFAULT_SOCIALS = [
 
 const Hero = () => {
   const { data: heroData } = useFirebaseData('hero')
+  const isTouch = useTouchDevice()
   const WORDS = heroData?.subtitleWords || DEFAULT_WORDS
   const tagline = heroData?.tagline || 'Crafting innovative web applications, exploring cutting-edge technologies, and building digital experiences that make an impact.'
   const profileImage = heroData?.profileImage
@@ -162,18 +164,19 @@ const Hero = () => {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-[var(--color-primary)]/10 via-[var(--color-secondary)]/10 to-[var(--color-accent)]/10 border border-[var(--color-primary)]/20 rounded-full text-sm font-medium mb-8 animate-float shadow-[0_0_30px_rgba(var(--color-primary-rgb),0.08)]"
         >
-          <motion.span
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-          >
-            <Sparkles size={14} className="text-[var(--color-primary)]" />
-          </motion.span>
+            <motion.span
+              className={isTouch ? 'm-spin' : ''}
+              animate={!isTouch ? { rotate: [0, 360] } : {}}
+              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+            >
+              <Sparkles size={14} className="text-[var(--color-primary)]" />
+            </motion.span>
           <span className="bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] bg-clip-text text-transparent font-semibold">
             {badge}
           </span>
           <motion.span
-            className="w-2 h-2 rounded-full bg-green-400"
-            animate={{ scale: [1, 1.5, 1] }}
+            className={`w-2 h-2 rounded-full bg-green-400${isTouch ? ' m-pulse' : ''}`}
+            animate={!isTouch ? { scale: [1, 1.5, 1] } : {}}
             transition={{ duration: 1.5, repeat: Infinity }}
           />
         </motion.div>
@@ -196,15 +199,15 @@ const Hero = () => {
               </div>
             </div>
             <motion.div
-              className="absolute -inset-1 rounded-full bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] opacity-30 blur-md -z-10"
-              animate={{ opacity: [0.2, 0.5, 0.2] }}
+              className={`absolute -inset-1 rounded-full bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] opacity-30 blur-md -z-10${isTouch ? ' m-glow' : ''}`}
+              animate={!isTouch ? { opacity: [0.2, 0.5, 0.2] } : {}}
               transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             />
             <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] flex items-center justify-center shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.3)]">
               <motion.span
-                animate={{ scale: [1, 1.2, 1] }}
+                className={`text-white text-xs${isTouch ? ' m-pulse-sm' : ''}`}
+                animate={!isTouch ? { scale: [1, 1.2, 1] } : {}}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="text-white text-xs"
               >
                 ✦
               </motion.span>
@@ -249,11 +252,11 @@ const Hero = () => {
           <span className="inline-block min-w-[180px] text-white font-medium">
             {text}
             <motion.span
-              className="inline-block w-[3px] h-[1em] ml-1 rounded-full"
+              className={`inline-block w-[3px] h-[1em] ml-1 rounded-full${isTouch ? ' m-blink' : ''}`}
               style={{
                 background: 'linear-gradient(180deg, var(--color-primary), var(--color-secondary), var(--color-accent))',
               }}
-              animate={{ opacity: [1, 0] }}
+              animate={!isTouch ? { opacity: [1, 0] } : {}}
               transition={{ duration: 0.7, repeat: Infinity }}
             />
           </span>
@@ -285,7 +288,8 @@ const Hero = () => {
             <span className="relative z-10 flex items-center gap-2">
               Explore My Work
               <motion.span
-                animate={{ x: [0, 6, 0] }}
+                className={isTouch ? 'm-bounce-x' : ''}
+                animate={!isTouch ? { x: [0, 6, 0] } : {}}
                 transition={{ duration: 1.5, repeat: Infinity }}
               >
                 <ArrowDown size={16} />
@@ -348,31 +352,6 @@ const Hero = () => {
         </motion.div>
       </div>
 
-      {/* Enhanced scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="flex flex-col items-center gap-2"
-        >
-          <span className="text-[10px] text-gray-500 font-medium tracking-[0.2em] uppercase">
-            Scroll
-          </span>
-          <div className="flex flex-col items-center gap-1">
-            <div className="w-[2px] h-6 bg-gradient-to-b from-[var(--color-primary)] via-[var(--color-secondary)] to-transparent rounded-full" />
-            <motion.div
-              className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            />
-          </div>
-        </motion.div>
-      </motion.div>
     </section>
   )
 }

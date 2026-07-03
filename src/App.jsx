@@ -17,10 +17,15 @@ import ThemeToggle from './components/ThemeToggle'
 function App() {
   const [isLoading, setIsLoading] = useState(true)
   const [theme, setTheme] = useState('cold')
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'cold' ? 'warm' : 'cold')
   }
+
+  useEffect(() => {
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0)
+  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -35,11 +40,11 @@ function App() {
 
   return (
     <>
-      <CustomCursor />
+      {!isTouchDevice && <CustomCursor />}
       <PageTransition>
          <div className="bg-[#0a0a0a] text-white overflow-x-hidden noise-bg" data-theme={theme}>
           <Navbar theme={theme} toggleTheme={toggleTheme} />
-          <CursorBackground />
+          {!isTouchDevice && <CursorBackground />}
           <FloatingActionButton />
           <Hero />
           <About />

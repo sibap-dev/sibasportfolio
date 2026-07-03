@@ -75,7 +75,6 @@
   body { cursor: auto; }
 }
 
-::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: #0a0a0a; }
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, var(--color-primary), var(--color-secondary), var(--color-accent));
@@ -95,6 +94,24 @@
 @media (hover: none) and (pointer: coarse) {
   .custom-cursor { display: none !important; }
   body { cursor: auto; }
+  .noise-bg::before { content: none !important; }
+
+  /* Disable expensive backdrop-filter on mobile (GPU readback on every scroll frame) */
+  .glass, .backdrop-blur-xl, .backdrop-blur-md, .backdrop-blur-sm,
+  [class*="backdrop-blur-"] { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+
+  /* Reduce background orb blur — visually identical, much cheaper GPU */
+  .animate-blob { filter: blur(30px) !important; }
+  div[class*="blur-"]:not([class*="backdrop-blur-"]) {
+    filter: blur(20px) !important;
+  }
+
+  /* Kill paint-triggering CSS animations — compositor thread only */
+  .animate-gradient-text { animation: none !important; will-change: unset !important; }
+  .animate-glow-pulse { animation: none !important; will-change: unset !important; }
+  .card-shine::after { animation: none !important; }
+  .animate-shimmer-sweep { animation: none !important; will-change: unset !important; }
+  .gradient-border-card::before { animation: none !important; }
 }
 
 @keyframes floaty {
@@ -268,4 +285,29 @@
 }
 .animate-marquee:hover {
   animation-play-state: paused;
+}
+
+/* Mobile CSS animations — replace framer-motion repeat:Infinity JS loops with compositor-thread CSS */
+@media (hover: none) and (pointer: coarse) {
+  .m-spin { animation: m-spin 3s linear infinite !important; }
+  .m-pulse { animation: m-pulse 1.5s ease-in-out infinite !important; }
+  .m-glow { animation: m-glow 3s ease-in-out infinite !important; }
+  .m-pulse-sm { animation: m-pulse-sm 2s ease-in-out infinite !important; }
+  .m-blink { animation: m-blink 0.7s infinite !important; }
+  .m-bounce-x { animation: m-bounce-x 1.5s ease-in-out infinite !important; }
+  .m-bounce-y { animation: m-bounce-y 2s ease-in-out infinite !important; }
+  .m-blink-alt { animation: m-blink-alt 1.5s ease-in-out infinite !important; }
+  .m-pulse-ring { animation: m-pulse-ring 2.5s ease-in-out infinite !important; }
+}
+@keyframes m-spin { to { rotate: 360deg; } }
+@keyframes m-pulse { 0%,100% { scale: 1; } 50% { scale: 1.5; } }
+@keyframes m-glow { 0%,100% { opacity: 0.2; } 50% { opacity: 0.5; } }
+@keyframes m-pulse-sm { 0%,100% { scale: 1; } 50% { scale: 1.2; } }
+@keyframes m-blink { to { opacity: 0; } }
+@keyframes m-bounce-x { 0%,100% { translate: 0; } 50% { translate: 6px 0; } }
+@keyframes m-bounce-y { 0%,100% { translate: 0; } 50% { translate: 0 10px; } }
+@keyframes m-blink-alt { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
+@keyframes m-pulse-ring {
+  0%,100% { scale: 1; opacity: 0.5; }
+  50% { scale: 1.4; opacity: 0; }
 }
