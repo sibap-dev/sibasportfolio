@@ -168,11 +168,12 @@ const Hero = () => {
 
       <div className="max-w-6xl mx-auto text-center relative z-10">
         {/* Badge */}
-        <motion.div
+        <motion.a
+          href="#contact"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-[var(--color-primary)]/10 via-[var(--color-secondary)]/10 to-[var(--color-accent)]/10 border border-[var(--color-primary)]/20 rounded-full text-sm font-medium mb-8 animate-float shadow-[0_0_30px_rgba(var(--color-primary-rgb),0.08)]"
+          className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-[var(--color-primary)]/10 via-[var(--color-secondary)]/10 to-[var(--color-accent)]/10 border border-[var(--color-primary)]/20 rounded-full text-sm font-medium mb-8 animate-float shadow-[0_0_30px_rgba(var(--color-primary-rgb),0.08)] cursor-pointer hover:scale-105 transition-transform"
         >
             <motion.span
               className={isTouch ? 'm-spin' : ''}
@@ -186,10 +187,10 @@ const Hero = () => {
           </span>
           <motion.span
             className={`w-2 h-2 rounded-full bg-green-400${isTouch ? ' m-pulse' : ''}`}
-            animate={!isTouch ? { scale: [1, 1.5, 1] } : {}}
-            transition={{ duration: 1.5, repeat: Infinity }}
+            animate={!isTouch ? { opacity: [1, 0.3, 1] } : {}}
+            transition={{ duration: 2, repeat: Infinity }}
           />
-        </motion.div>
+        </motion.a>
 
         {/* Profile picture */}
         <motion.div
