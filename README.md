@@ -44,11 +44,9 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/newport.git
-cd newport
+git clone https://github.com/sibap-dev/sibasportfolio.git
+cd sibasportfolio
 
-# Copy environment variables
-cp .env.example .env
 # Fill in your Firebase config values
 
 # Install & run
@@ -83,7 +81,7 @@ src/
 
 ## 🔗 Related
 
-- [Newport Dashboard](https://github.com/sibap-dev/portdash) — Content management app for this portfolio
+- [Portfolio Dashboard](https://github.com/sibap-dev/portdash) — Content management app for this portfolio
 
 ---
 
