@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import { useState } from 'react'
 import {
   Code, Palette, Rocket, Users, Award, Coffee, BookOpen, Heart,
-  ChevronRight, Sparkles, Zap
+  ChevronRight, ChevronDown, ChevronUp, Sparkles, Zap
 } from 'lucide-react'
 import Counter from './Counter'
 import { useFirebaseData } from '../hooks/useFirebaseData'
@@ -26,6 +27,7 @@ const DEFAULT_STATS = [
 const About = () => {
   const { data: aboutData } = useFirebaseData('about')
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
+  const [showAllFeatures, setShowAllFeatures] = useState(false)
 
   const rawStats = aboutData?.stats || DEFAULT_STATS.map(({ icon, color, ...rest }) => rest)
   const stats = rawStats.map((s, i) => ({
@@ -35,11 +37,14 @@ const About = () => {
   }))
 
   const rawFeatures = aboutData?.features || DEFAULT_FEATURES.map(({ icon, color, ...rest }) => rest)
-  const features = rawFeatures.map((f, i) => ({
-    ...f,
-    icon: ICON_MAP[Object.keys(ICON_MAP)[i % Object.keys(ICON_MAP).length]] || Code,
-    color: COLORS[i % COLORS.length],
-  }))
+  const features = rawFeatures
+    .slice()
+    .sort((a, b) => (a.priority || 999) - (b.priority || 999))
+    .map((f, i) => ({
+      ...f,
+      icon: ICON_MAP[Object.keys(ICON_MAP)[i % Object.keys(ICON_MAP).length]] || Code,
+      color: COLORS[i % COLORS.length],
+    }))
 
   const bio = aboutData?.bio || "I'm a CSE student at <strong className=\"text-white\">NIST University</strong>, passionate about development and programming, constantly exploring new technologies to build innovative solutions."
   const bioExtra = aboutData?.bioExtra || 'I thrive on turning complex problems into elegant solutions. Every challenge is an opportunity to learn and grow. Quality over quantity, always.'
@@ -174,7 +179,7 @@ const About = () => {
               </span>
             </div>
 
-            {features.map((feature, index) => (
+            {features.slice(0, showAllFeatures ? features.length : 3).map((feature, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, x: 20 }}
@@ -228,6 +233,28 @@ const About = () => {
                 </div>
               </motion.div>
             ))}
+
+            {features.length > 3 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                className="flex justify-center mt-6"
+              >
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setShowAllFeatures(!showAllFeatures)}
+                  className="px-6 py-2.5 bg-white/5 text-white rounded-full text-sm font-medium border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all flex items-center gap-2"
+                >
+                  {showAllFeatures ? (
+                    <>Show Less <ChevronUp size={16} /></>
+                  ) : (
+                    <>Show More <ChevronDown size={16} /></>
+                  )}
+                </motion.button>
+              </motion.div>
+            )}
           </motion.div>
         </div>
       </div>

@@ -15,7 +15,7 @@ const DEFAULT_PROJECTS = [
     github: 'https://github.com/sibap-dev/My_Portfolio',
     demo: 'https://sibas-portfolio.onrender.com/',
     category: 'Full Stack',
-    gradient: 'from-[var(--color-primary)] via-[#0099CC] to-[#005577]',
+    gradient: 'from-[var(--color-primary)] via-#0099CC to-#005577',
   },
   {
     pinned: true,
@@ -27,7 +27,7 @@ const DEFAULT_PROJECTS = [
     github: 'https://github.com/sibap-dev/Netflix_clone',
     demo: 'https://sibap-dev.github.io/Netflix_clone/',
     category: 'Frontend',
-    gradient: 'from-[var(--color-secondary)] via-[#7B1FA2] to-[#4A0072]',
+    gradient: 'from-[var(--color-secondary)] via-#7B1FA2 to-#4A0072',
   },
   {
     pinned: true,
@@ -63,7 +63,7 @@ const DEFAULT_PROJECTS = [
     github: 'https://github.com/sibap-dev/Task_internship',
     demo: 'https://siba-calculator.onrender.com/',
     category: 'Full Stack',
-    gradient: 'from-[var(--color-primary)] via-[#0099CC] to-[#005577]',
+    gradient: 'from-[var(--color-primary)] via-#0099CC to-#005577',
   },
   {
     pinned: false,
