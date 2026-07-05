@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUp, Github, MessageCircle } from 'lucide-react'
+import { useFirebaseData } from '../hooks/useFirebaseData'
 
 const FloatingActionButton = () => {
+  const { data: heroData } = useFirebaseData('hero')
   const [isVisible, setIsVisible] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+
+  const githubUrl = heroData?.socialLinks?.find((s) => s.platform === 'github')?.url || 'https://github.com'
 
   useEffect(() => {
     const toggleVisibility = () => setIsVisible(window.scrollY > 500)
@@ -65,7 +69,7 @@ const FloatingActionButton = () => {
                   <motion.a
                     whileHover={{ scale: 1.15 }}
                     whileTap={{ scale: 0.9 }}
-                    href="https://github.com"
+                    href={githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-[var(--color-secondary)]/20 hover:border-[var(--color-secondary)]/40 transition-all shadow-lg"
