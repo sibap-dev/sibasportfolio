@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion'
-import { ArrowDown, Github, Linkedin, Mail, Sparkles, Download, Code2 } from 'lucide-react'
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowDown, Github, Linkedin, Mail, Sparkles, Download, Code2, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 
 import { useFirebaseData } from '../hooks/useFirebaseData'
 import { useTouchDevice } from '../hooks/useTouchDevice'
@@ -35,6 +35,16 @@ const Hero = () => {
   const [isDeleting, setIsDeleting] = useState(false)
   const [loopNum, setLoopNum] = useState(0)
   const [typingSpeed, setTypingSpeed] = useState(150)
+  const [showExpanded, setShowExpanded] = useState(false)
+  const [imgIndex, setImgIndex] = useState(0)
+  const swipeRef = useRef(null)
+
+  const allImages = useMemo(() => {
+    const imgs = []
+    if (profileImage) imgs.push(profileImage)
+    if (heroData?.gallery?.length) imgs.push(...heroData.gallery)
+    return imgs
+  }, [profileImage, heroData?.gallery])
 
   useEffect(() => {
     const handleTyping = () => {
@@ -192,7 +202,7 @@ const Hero = () => {
               <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-[3px] border-transparent bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] p-[3px] shadow-[0_0_40px_rgba(var(--color-secondary-rgb),0.2)]">
               <div className="w-full h-full rounded-full bg-[#1a1a2e] flex items-center justify-center overflow-hidden">
                 {profileImage ? (
-                  <img src={profileImage} alt="Siba Prasad Padhi" className="w-full h-full object-cover" />
+                  <img src={profileImage} alt="Siba Prasad Padhi" className="w-full h-full object-cover cursor-pointer" onClick={() => { setShowExpanded(true); setImgIndex(0) }} />
                 ) : (
                   <span className="text-2xl sm:text-3xl font-bold text-white/40 font-display">SP</span>
                 )}
@@ -352,6 +362,81 @@ const Hero = () => {
         </motion.div>
       </div>
 
+      {/* Image expand modal */}
+      <AnimatePresence>
+        {showExpanded && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-black/90 z-[60] flex items-center justify-center p-4 select-none"
+            onClick={() => { setShowExpanded(false); setImgIndex(0) }}
+            onTouchStart={(e) => { swipeRef.current = e.changedTouches[0].clientX }}
+            onTouchEnd={(e) => {
+              if (allImages.length < 2) return
+              const dx = e.changedTouches[0].clientX - (swipeRef.current || 0)
+              if (dx > 50) setImgIndex(i => (i - 1 + allImages.length) % allImages.length)
+              else if (dx < -50) setImgIndex(i => (i + 1) % allImages.length)
+            }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={imgIndex}
+                initial={{ scale: 0.85, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.85, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                className="relative max-w-lg w-full"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <img src={allImages[imgIndex]} alt="Siba Prasad Padhi" className="w-full rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.5)]" />
+
+                {/* Close button */}
+                <button
+                  onClick={() => { setShowExpanded(false); setImgIndex(0) }}
+                  className="absolute -top-3 -right-3 p-2 bg-[#0a0a0a] border border-white/10 rounded-full hover:bg-white/10 transition-colors z-10"
+                >
+                  <X size={18} className="text-white" />
+                </button>
+
+                {/* Navigation arrows */}
+                {allImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setImgIndex(i => (i - 1 + allImages.length) % allImages.length)}
+                      className="absolute left-1 sm:-left-4 top-1/2 -translate-y-1/2 p-2 sm:p-3 bg-[#0a0a0a] border border-white/10 rounded-full hover:bg-white/10 transition-colors"
+                    >
+                      <ChevronLeft size={22} className="text-white" />
+                    </button>
+                    <button
+                      onClick={() => setImgIndex(i => (i + 1) % allImages.length)}
+                      className="absolute right-1 sm:-right-4 top-1/2 -translate-y-1/2 p-2 sm:p-3 bg-[#0a0a0a] border border-white/10 rounded-full hover:bg-white/10 transition-colors"
+                    >
+                      <ChevronRight size={22} className="text-white" />
+                    </button>
+                  </>
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Dots indicator */}
+            {allImages.length > 1 && (
+              <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                {allImages.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={(e) => { e.stopPropagation(); setImgIndex(i) }}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      i === imgIndex ? 'bg-white w-5' : 'bg-white/40 hover:bg-white/70'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   )
 }
